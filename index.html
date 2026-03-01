@@ -890,6 +890,28 @@ Generate up to 5 insights ordered by priority."</span>
 </div><!-- end course-shell -->
 
 <script>
+  // ─── STORAGE KEY ───
+  const STORAGE_KEY = 'ai_mastery_progress';
+
+  function saveProgress() {
+    try {
+      const data = { scores: moduleScores, lastModule: currentModule };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch(e) {}
+  }
+
+  function loadProgress() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e) { return null; }
+  }
+
+  function clearProgress() {
+    try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+    location.reload();
+  }
+
   // ─── COVER ───
   function startCourse() {
     document.getElementById('cover').style.display = 'none';
@@ -916,6 +938,7 @@ Generate up to 5 insights ordered by priority."</span>
     document.querySelectorAll('.tab-btn').forEach(b => {
       b.classList.toggle('active', b.textContent.trim() === 'Lesson');
     });
+    saveProgress();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -1001,28 +1024,106 @@ Generate up to 5 insights ordered by priority."</span>
     resultEl.classList.remove('show');
     resultEl.innerHTML = '';
     quizEl.querySelector('.btn-submit').disabled = false;
+    // clear saved score for this module so reset is honoured
+    delete moduleScores[moduleId];
+    saveProgress();
   }
 
   // ─── PROGRESS ───
   const moduleScores = {};
+
   function updateProgress(moduleId, score) {
     moduleScores[moduleId] = score;
     const total = Object.values(moduleScores).reduce((a,b) => a+b, 0);
     const pct = Math.round((total / 60) * 100);
     document.getElementById('overallProgress').style.width = pct + '%';
     document.getElementById('overallPct').textContent = pct + '%';
-    if (score >= 7) {
-      document.querySelectorAll('.mod-btn').forEach(btn => {
-        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("'" + moduleId + "'")) {
-          if (!btn.querySelector('.mod-check')) {
-            const check = document.createElement('span');
-            check.className = 'mod-check';
-            check.textContent = ' ✓';
-            btn.appendChild(check);
-          }
+    if (score >= 7) { addCheckmark(moduleId); }
+    saveProgress();
+  }
+
+  function addCheckmark(moduleId) {
+    document.querySelectorAll('.mod-btn').forEach(btn => {
+      if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("'" + moduleId + "'")) {
+        if (!btn.querySelector('.mod-check')) {
+          const check = document.createElement('span');
+          check.className = 'mod-check';
+          check.textContent = ' ✓';
+          btn.appendChild(check);
         }
-      });
-    }
+      }
+    });
+  }
+
+  // ─── RESTORE SAVED PROGRESS ON LOAD ───
+  window.addEventListener('DOMContentLoaded', () => {
+    const saved = loadProgress();
+    if (!saved || !saved.scores || Object.keys(saved.scores).length === 0) return;
+
+    // Show "resume" banner on cover page
+    const cover = document.getElementById('cover');
+    const resumeEl = document.createElement('div');
+    resumeEl.style.cssText = `
+      position:absolute; bottom:80px; left:50%; transform:translateX(-50%);
+      background:rgba(0,229,160,0.08); border:1px solid rgba(0,229,160,0.25);
+      border-radius:8px; padding:12px 24px; font-family:'DM Mono',monospace;
+      font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+      color:var(--accent); cursor:pointer; white-space:nowrap;
+      transition: opacity 0.2s;
+    `;
+    const completedCount = Object.keys(saved.scores).length;
+    const lastMod = saved.lastModule || 'm1';
+    const modNames = {m1:'LLM Basics',m2:'Claude Deep Dive',m3:'Agentic AI',m4:'Ecosystem Map',m5:'Automation',m6:'Sales & Positioning'};
+    resumeEl.innerHTML = `↩ Resume — ${completedCount} module${completedCount !== 1 ? 's' : ''} completed · Last: ${modNames[lastMod]}`;
+    resumeEl.addEventListener('mouseenter', () => resumeEl.style.opacity = '0.75');
+    resumeEl.addEventListener('mouseleave', () => resumeEl.style.opacity = '1');
+    resumeEl.addEventListener('click', () => {
+      restoreProgress(saved);
+      startCourse();
+      // Navigate to last module
+      const targetBtn = [...document.querySelectorAll('.mod-btn')].find(b =>
+        b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + lastMod + "'")
+      );
+      if (targetBtn) {
+        document.querySelectorAll('.module-page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.mod-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(lastMod).classList.add('active');
+        targetBtn.classList.add('active');
+        currentModule = lastMod;
+        showTabByName('lesson');
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.toggle('active', b.textContent.trim() === 'Lesson');
+        });
+      }
+    });
+    cover.appendChild(resumeEl);
+
+    // Also add reset button to header once in course
+    addResetButton();
+  });
+
+  function restoreProgress(saved) {
+    Object.entries(saved.scores).forEach(([moduleId, score]) => {
+      moduleScores[moduleId] = score;
+      if (score >= 7) addCheckmark(moduleId);
+    });
+    const total = Object.values(moduleScores).reduce((a,b) => a+b, 0);
+    const pct = Math.round((total / 60) * 100);
+    document.getElementById('overallProgress').style.width = pct + '%';
+    document.getElementById('overallPct').textContent = pct + '%';
+  }
+
+  function addResetButton() {
+    const headerRight = document.querySelector('.header-right');
+    if (!headerRight || headerRight.querySelector('.btn-reset-progress')) return;
+    const btn = document.createElement('button');
+    btn.className = 'badge badge-muted btn-reset-progress';
+    btn.textContent = '↺ Reset Progress';
+    btn.style.cursor = 'pointer';
+    btn.addEventListener('click', () => {
+      if (confirm('Reset all progress? This cannot be undone.')) clearProgress();
+    });
+    headerRight.appendChild(btn);
   }
 </script>
 </body>
