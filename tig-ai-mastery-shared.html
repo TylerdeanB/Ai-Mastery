@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Mastery — by Tig</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #080a0f; --surface: #0d1017; --surface2: #131820;
+    --border: rgba(255,255,255,0.06); --accent: #00e5a0; --accent2: #0066ff;
+    --warn: #ff6b35; --danger: #ff3366; --text: #e8eaf0; --muted: #6b7280; --card: #111620;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Instrument Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); opacity: 0.4; pointer-events: none; z-index: 0; }
+
+  /* ─── COVER PAGE ─── */
+  .cover {
+    position: relative; z-index: 10;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    padding: 60px 40px;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,229,160,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(0,102,255,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .cover-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: riseIn 0.6s ease 0.2s forwards;
+  }
+
+  .cover-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    color: #fff;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: riseIn 0.6s ease 0.4s forwards;
+  }
+
+  .cover-title span { color: var(--accent); }
+
+  .cover-sub {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 520px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: riseIn 0.6s ease 0.6s forwards;
+  }
+
+  .cover-meta {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-bottom: 56px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: riseIn 0.6s ease 0.8s forwards;
+  }
+
+  .cover-stat {
+    text-align: center;
+  }
+
+  .cover-stat .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .cover-stat .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .cover-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border);
+    align-self: center;
+  }
+
+  .cover-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 36px;
+    background: var(--accent);
+    color: #080a0f;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity 0.2s, transform 0.2s;
+    opacity: 0;
+    animation: riseIn 0.6s ease 1s forwards;
+  }
+
+  .cover-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .cover-credit {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    opacity: 0;
+    animation: riseIn 0.6s ease 1.2s forwards;
+  }
+
+  .cover-credit span { color: var(--accent); }
+
+  .cover-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 80%);
+  }
+
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── COURSE SHELL (hidden until started) ─── */
+  .course-shell { display: none; }
+  .course-shell.active { display: block; animation: fadeIn 0.4s ease; }
+
+  /* HEADER */
+  .header { position: relative; z-index: 10; padding: 28px 48px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .header-left h1 { font-family: 'Syne', sans-serif; font-size: clamp(18px, 2vw, 26px); font-weight: 800; letter-spacing: -0.03em; color: #fff; }
+  .header-left h1 span { color: var(--accent); }
+  .header-left p { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+  .badge { font-family: 'DM Mono', monospace; font-size: 10px; padding: 5px 10px; border-radius: 4px; border: 1px solid; }
+  .badge-green { color: var(--accent); border-color: rgba(0,229,160,0.25); background: rgba(0,229,160,0.06); }
+  .badge-muted { color: var(--muted); border-color: var(--border); background: transparent; cursor: pointer; transition: all 0.2s; }
+  .badge-muted:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+  .header-right { display: flex; gap: 8px; align-items: center; }
+
+  /* PROGRESS BAR */
+  .progress-bar { position: relative; z-index: 9; background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 48px; display: flex; align-items: center; gap: 16px; }
+  .progress-label { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); white-space: nowrap; }
+  .progress-track { flex: 1; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.5s ease; }
+  .progress-pct { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); min-width: 36px; text-align: right; }
+
+  /* MODULE NAV */
+  .module-nav { position: sticky; top: 0; z-index: 100; background: rgba(8,10,15,0.97); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; padding: 0 48px; }
+  .mod-btn { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 14px 16px; cursor: pointer; border: none; border-bottom: 2px solid transparent; white-space: nowrap; background: none; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+  .mod-btn:hover { color: var(--text); }
+  .mod-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .mod-btn .mod-num { font-size: 9px; opacity: 0.5; }
+  .mod-btn .mod-check { color: var(--accent); font-size: 11px; }
+
+  /* INNER NAV */
+  .inner-nav { background: var(--surface); border-bottom: 1px solid var(--border); display: flex; padding: 0 48px; overflow-x: auto; }
+  .tab-btn { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 11px 14px; cursor: pointer; border: none; border-bottom: 2px solid transparent; background: none; white-space: nowrap; transition: all 0.2s; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MAIN */
+  .main { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 44px 48px 80px; }
+  .module-page { display: none; }
+  .module-page.active { display: block; animation: fadeIn 0.25s ease; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* TYPOGRAPHY */
+  .sec-tag { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .sec-title { font-family: 'Syne', sans-serif; font-size: clamp(20px, 2.8vw, 34px); font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+  .sec-desc { margin-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.65; max-width: 620px; }
+  .section-header { margin-bottom: 36px; padding-bottom: 22px; border-bottom: 1px solid var(--border); }
+  h2.sub { font-family: 'Syne', sans-serif; font-size: 19px; font-weight: 700; color: #fff; margin: 32px 0 14px; }
+  p.body { font-size: 14px; line-height: 1.7; color: var(--muted); margin-bottom: 18px; }
+
+  /* DEF BLOCKS */
+  .def-block { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 18px 22px; margin-bottom: 14px; }
+  .def-block .term { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 5px; }
+  .def-block .def { font-size: 13px; line-height: 1.7; color: var(--muted); }
+  .def-block .example { margin-top: 9px; padding: 9px 12px; background: rgba(0,229,160,0.05); border-radius: 5px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); line-height: 1.6; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; transition: border-color 0.2s; }
+  .card:hover { border-color: rgba(0,229,160,0.2); }
+  .card-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .card h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .card p { font-size: 13px; line-height: 1.65; color: var(--muted); }
+
+  /* TABLES */
+  .compare-table { width: 100%; border-collapse: collapse; margin-bottom: 22px; }
+  .compare-table th { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); }
+  .compare-table td { font-size: 13px; padding: 13px 14px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.6; color: var(--muted); }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .col-name { font-family: 'Syne', sans-serif; font-weight: 700; color: #fff !important; font-size: 14px; }
+
+  /* PILLS */
+  .pill { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 7px; border-radius: 3px; margin: 2px; }
+  .pill-green { background: rgba(0,229,160,0.1); color: var(--accent); }
+  .pill-blue { background: rgba(0,102,255,0.1); color: #60a5fa; }
+  .pill-orange { background: rgba(255,107,53,0.1); color: var(--warn); }
+  .pill-red { background: rgba(255,51,102,0.1); color: var(--danger); }
+
+  /* CALLOUTS */
+  .callout { border: 1px solid rgba(0,229,160,0.2); background: rgba(0,229,160,0.05); border-radius: 8px; padding: 18px 22px; margin: 22px 0; display: flex; gap: 14px; align-items: flex-start; }
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .callout-text { font-size: 13px; line-height: 1.65; color: var(--text); }
+  .callout-text strong { color: var(--accent); font-family: 'Syne', sans-serif; font-size: 14px; display: block; margin-bottom: 3px; }
+  .callout.warn { border-color: rgba(255,107,53,0.25); background: rgba(255,107,53,0.05); }
+  .callout.warn .callout-text strong { color: var(--warn); }
+  .callout.blue { border-color: rgba(0,102,255,0.25); background: rgba(0,102,255,0.05); }
+  .callout.blue .callout-text strong { color: #60a5fa; }
+
+  /* DIAGRAMS */
+  .diagram { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 28px; margin-bottom: 22px; overflow-x: auto; }
+  .diagram h4 { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
+  .arch-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; justify-content: center; flex-wrap: wrap; }
+  .arch-node { border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; text-align: center; min-width: 110px; background: var(--card); }
+  .arch-node .an-label { font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 3px; }
+  .arch-node .an-name { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; color: #fff; }
+  .arch-node.green { border-color: rgba(0,229,160,0.35); background: rgba(0,229,160,0.08); }
+  .arch-node.green .an-name { color: var(--accent); }
+  .arch-node.blue { border-color: rgba(0,102,255,0.35); background: rgba(0,102,255,0.08); }
+  .arch-node.blue .an-name { color: #60a5fa; }
+  .arch-node.orange { border-color: rgba(255,107,53,0.35); background: rgba(255,107,53,0.08); }
+  .arch-node.orange .an-name { color: var(--warn); }
+  .arch-arrow { color: var(--muted); font-size: 16px; padding: 0 2px; }
+
+  /* CODE BLOCK */
+  .code-block { background: #0a0d12; border: 1px solid var(--border); border-radius: 8px; padding: 18px 22px; margin: 14px 0; overflow-x: auto; }
+  .code-block .code-label { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 10px; }
+  .code-block code { font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.7; color: var(--text); white-space: pre; }
+  .code-block code .kw { color: #c792ea; }
+  .code-block code .str { color: var(--accent); }
+  .code-block code .comment { color: var(--muted); }
+
+  /* ─── QUIZ ─── */
+  .quiz-section { margin-top: 40px; border-top: 1px solid var(--border); padding-top: 36px; }
+  .quiz-header { margin-bottom: 28px; }
+  .quiz-header .quiz-tag { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warn); margin-bottom: 6px; }
+  .quiz-header h2 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: #fff; }
+  .quiz-header p { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .quiz-question { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 14px; transition: border-color 0.2s; }
+  .quiz-question.correct { border-color: rgba(0,229,160,0.4); background: rgba(0,229,160,0.04); }
+  .quiz-question.incorrect { border-color: rgba(255,51,102,0.4); background: rgba(255,51,102,0.04); }
+  .q-num { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px; }
+  .q-text { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 16px; line-height: 1.4; }
+  .q-options { display: flex; flex-direction: column; gap: 8px; }
+  .q-option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.15s; font-size: 13px; color: var(--text); text-align: left; width: 100%; }
+  .q-option:hover:not(:disabled) { border-color: rgba(0,229,160,0.3); background: rgba(0,229,160,0.05); }
+  .q-option .opt-letter { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--muted); background: var(--card); border: 1px solid var(--border); border-radius: 3px; padding: 2px 7px; flex-shrink: 0; transition: all 0.15s; }
+  .q-option.selected { border-color: rgba(0,102,255,0.5); background: rgba(0,102,255,0.08); }
+  .q-option.selected .opt-letter { background: rgba(0,102,255,0.2); border-color: rgba(0,102,255,0.4); color: #60a5fa; }
+  .q-option.revealed-correct { border-color: rgba(0,229,160,0.5) !important; background: rgba(0,229,160,0.08) !important; }
+  .q-option.revealed-correct .opt-letter { background: rgba(0,229,160,0.2); border-color: rgba(0,229,160,0.4); color: var(--accent); }
+  .q-option.revealed-wrong { border-color: rgba(255,51,102,0.4) !important; background: rgba(255,51,102,0.05) !important; opacity: 0.6; }
+  .q-option:disabled { cursor: default; }
+  .q-feedback { margin-top: 12px; padding: 10px 14px; border-radius: 6px; font-size: 13px; line-height: 1.6; display: none; }
+  .q-feedback.show { display: block; }
+  .q-feedback.fb-correct { background: rgba(0,229,160,0.08); border: 1px solid rgba(0,229,160,0.2); color: var(--accent); }
+  .q-feedback.fb-wrong { background: rgba(255,51,102,0.08); border: 1px solid rgba(255,51,102,0.2); color: var(--danger); }
+  .q-feedback strong { display: block; margin-bottom: 2px; font-family: 'Syne', sans-serif; font-size: 13px; }
+  .quiz-submit { margin-top: 24px; display: flex; gap: 12px; align-items: center; }
+  .btn-submit { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 28px; background: var(--accent); color: #080a0f; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: opacity 0.2s; }
+  .btn-submit:hover { opacity: 0.85; }
+  .btn-submit:disabled { opacity: 0.4; cursor: default; }
+  .btn-reset { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 11px 20px; background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+  .btn-reset:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .quiz-result { margin-top: 24px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 28px; display: none; }
+  .quiz-result.show { display: block; animation: fadeIn 0.3s ease; }
+  .result-score { font-family: 'Syne', sans-serif; font-size: 52px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .result-score.pass { color: var(--accent); }
+  .result-score.fail { color: var(--warn); }
+  .result-label { font-family: 'DM Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; }
+  .result-msg { font-size: 15px; color: var(--text); line-height: 1.6; }
+
+  @media (max-width: 768px) {
+    .header, .module-nav, .inner-nav, .main, .progress-bar { padding-left: 20px; padding-right: 20px; }
+    .cover-title { font-size: clamp(40px, 10vw, 72px); }
+    .cover-divider { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════
+     COVER PAGE
+═══════════════════════════ -->
+<div class="cover" id="cover">
+  <div class="cover-grid-bg"></div>
+
+  <div class="cover-eyebrow">A course curated by Tig</div>
+
+  <h1 class="cover-title">AI<br><span>Mastery</span></h1>
+
+  <p class="cover-sub">Everything you need to understand AI — from how language models actually work, to agentic systems, automation, and how to talk about it in a room full of non-technical people.</p>
+
+  <div class="cover-meta">
+    <div class="cover-stat">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Modules</div>
+    </div>
+    <div class="cover-divider"></div>
+    <div class="cover-stat">
+      <div class="stat-num">60</div>
+      <div class="stat-label">Quiz Questions</div>
+    </div>
+    <div class="cover-divider"></div>
+    <div class="cover-stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Fluff</div>
+    </div>
+  </div>
+
+  <button class="cover-cta" onclick="startCourse()">Start Learning →</button>
+
+  <div class="cover-credit">Built by <span>Tig</span> · 2026</div>
+</div>
+
+<!-- ═══════════════════════════
+     COURSE SHELL
+═══════════════════════════ -->
+<div class="course-shell" id="courseShell">
+
+  <header class="header">
+    <div class="header-left">
+      <h1>AI <span>Mastery</span></h1>
+      <p>6 Modules · 60 Questions · Built by Tig</p>
+    </div>
+    <div class="header-right">
+      <span class="badge badge-green">Active</span>
+      <button class="badge badge-muted" onclick="backToCover()">← Cover</button>
+    </div>
+  </header>
+
+  <div class="progress-bar">
+    <span class="progress-label">Overall Progress</span>
+    <div class="progress-track"><div class="progress-fill" id="overallProgress" style="width:0%"></div></div>
+    <span class="progress-pct" id="overallPct">0%</span>
+  </div>
+
+  <nav class="module-nav">
+    <button class="mod-btn active" onclick="showModule('m1', this)"><span class="mod-num">01</span> LLM Basics</button>
+    <button class="mod-btn" onclick="showModule('m2', this)"><span class="mod-num">02</span> Claude Deep Dive</button>
+    <button class="mod-btn" onclick="showModule('m3', this)"><span class="mod-num">03</span> Agentic AI</button>
+    <button class="mod-btn" onclick="showModule('m4', this)"><span class="mod-num">04</span> Ecosystem Map</button>
+    <button class="mod-btn" onclick="showModule('m5', this)"><span class="mod-num">05</span> Automation</button>
+    <button class="mod-btn" onclick="showModule('m6', this)"><span class="mod-num">06</span> Sales & Positioning</button>
+  </nav>
+
+  <div class="inner-nav" id="innerNav">
+    <button class="tab-btn active" onclick="showTab('lesson', this)">Lesson</button>
+    <button class="tab-btn" onclick="showTab('quiz', this)">Quiz</button>
+  </div>
+
+  <main class="main">
+
+  <!-- ══════════════════ MODULE 1 ══════════════════ -->
+  <div class="module-page active" id="m1">
+    <div class="tab-content active" id="m1-lesson">
+      <div class="section-header">
+        <div class="sec-tag">Module 01 — LLM Fundamentals</div>
+        <h1 class="sec-title">How Language Models Actually Work</h1>
+        <p class="sec-desc">No fluff. What you need to understand about the technology you're working with — and how to get more from it.</p>
+      </div>
+
+      <h2 class="sub">What Is an LLM?</h2>
+      <div class="def-block">
+        <div class="term">LLM — Large Language Model</div>
+        <div class="def">A statistical prediction machine trained on billions of text examples. Given any input text, it predicts the most likely next word — over and over — until it produces a response. It doesn't "think." It pattern-matches at massive scale. The intelligence is emergent from that scale.</div>
+        <div class="example">Analogy: Autocomplete on your phone, but trained on essentially all human text ever written, producing surprisingly sophisticated output.</div>
+      </div>
+
+      <div class="diagram">
+        <h4>How an LLM Processes Your Message</h4>
+        <div class="arch-row">
+          <div class="arch-node orange"><div class="an-label">Your Input</div><div class="an-name">Prompt</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node"><div class="an-label">Step 1</div><div class="an-name">Tokenization</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node"><div class="an-label">Step 2</div><div class="an-name">Transformer</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node"><div class="an-label">Step 3</div><div class="an-name">Prediction</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node green"><div class="an-label">Output</div><div class="an-name">Response</div></div>
+        </div>
+      </div>
+
+      <h2 class="sub">Critical Terminology</h2>
+
+      <div class="def-block">
+        <div class="term">Token</div>
+        <div class="def">The unit of text an LLM processes. Roughly 1 token ≈ 4 characters ≈ 0.75 words. All LLM limits — speed, cost, context — are measured in tokens. This is what you pay for when using an AI API.</div>
+        <div class="example">Example: The word "hospitality" = 4 tokens. "Hi" = 1 token. Every character in your prompt and the AI's response costs tokens.</div>
+      </div>
+
+      <div class="def-block">
+        <div class="term">Context Window</div>
+        <div class="def">The maximum amount of text (in tokens) an LLM can "see" at once — both input AND output combined. Think of it as short-term memory. Once exceeded, earlier content gets cut off. Claude Sonnet has a 200,000 token context window — one of the largest available.</div>
+        <div class="example">Practical meaning: You could paste an entire book into Claude's context and it could analyse the whole thing at once.</div>
+      </div>
+
+      <div class="def-block">
+        <div class="term">Temperature</div>
+        <div class="def">Controls creativity vs consistency. 0.0 = always the same deterministic answer. 1.0 = creative and varied. For business data analysis: use 0.1–0.3. For creative writing: 0.7–0.9.</div>
+        <div class="example">Rule of thumb: low temperature for analysis and facts, high temperature for brainstorming and creativity.</div>
+      </div>
+
+      <div class="def-block">
+        <div class="term">System Prompt</div>
+        <div class="def">Instructions given to the model before the conversation starts. Sets the role, rules, and behaviour. The end user never sees it. This is the primary lever for controlling AI behaviour in any product you build.</div>
+        <div class="example">Example: "You are a financial analyst. Always respond in JSON. Never speculate without data." — This shapes every response that follows.</div>
+      </div>
+
+      <div class="def-block">
+        <div class="term">RAG — Retrieval Augmented Generation</div>
+        <div class="def">Instead of training a model on your data, you retrieve live data at query time and inject it into the prompt. No fine-tuning needed. This is how most production AI applications work — the model is generic, the data is specific.</div>
+        <div class="example">Example: A customer service bot that pulls your actual product catalogue into Claude's context before answering questions. The model doesn't "know" your products — it reads them fresh each time.</div>
+      </div>
+
+      <div class="def-block">
+        <div class="term">Inference</div>
+        <div class="def">The act of running a prompt through an LLM to get a response. Every AI answer = one inference call. In production systems, inference is what you pay for — per token, per call.</div>
+      </div>
+
+      <div class="def-block">
+        <div class="term">Hallucination</div>
+        <div class="def">When an LLM confidently generates false or made-up information. It's a fundamental property of how LLMs work — they predict plausible text, not guaranteed truth. The best models minimise it but can't eliminate it entirely.</div>
+        <div class="example">Mitigation: Ground AI responses in real injected data rather than asking the model to recall facts from training. Data-grounded prompts reduce hallucination risk significantly.</div>
+      </div>
+
+      <div class="def-block">
+        <div class="term">Fine-tuning</div>
+        <div class="def">Taking a base LLM and training it further on your own data to specialise its behaviour. Expensive and complex. In most cases, well-designed prompting (prompt engineering) achieves 90% of the result at zero extra cost.</div>
+      </div>
+
+      <h2 class="sub">Model Tiers — What to Use When</h2>
+      <table class="compare-table">
+        <thead><tr><th>Tier</th><th>Models</th><th>Best For</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td><span class="col-name">Frontier</span></td><td><span class="pill pill-green">Claude Opus</span> <span class="pill pill-blue">GPT-4o</span></td><td>Complex reasoning, strategy, hard multi-step analysis</td><td>High — use selectively</td></tr>
+          <tr><td><span class="col-name">Mid-Tier</span></td><td><span class="pill pill-green">Claude Sonnet</span> <span class="pill pill-blue">GPT-4o-mini</span></td><td>Production workloads, daily automation, most apps</td><td>Balanced — production default</td></tr>
+          <tr><td><span class="col-name">Fast/Cheap</span></td><td><span class="pill pill-green">Claude Haiku</span></td><td>Simple classification, routing, high-volume simple alerts</td><td>Low — high volume tasks</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <span class="callout-icon">💡</span>
+        <div class="callout-text"><strong>The Operator's Rule</strong>Match the model to the task. Using a frontier model for every task is like hiring a consultant to send emails. Route complex reasoning to Opus, production workloads to Sonnet, simple triggers to Haiku. Your cost efficiency at scale depends on this.</div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="m1-quiz">
+      <div class="quiz-section">
+        <div class="quiz-header">
+          <div class="quiz-tag">Module 01 — Knowledge Check</div>
+          <h2>LLM Fundamentals Quiz</h2>
+          <p>10 questions. Select your answer then hit Submit.</p>
+        </div>
+        <div id="quiz-m1">
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 01 / 10</div><div class="q-text">What does LLM stand for?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Large Logic Machine</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Large Language Model</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Layered Learning Module</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Linear Language Mechanism</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Large Language Model — a statistical prediction machine trained on billions of text examples.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> LLM = Large Language Model. It predicts the next token based on patterns in its training data at massive scale.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 02 / 10</div><div class="q-text">Roughly how many words does 1 token represent?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> 1 full word exactly</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> 2–3 words</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> About 0.75 words (¾ of a word)</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> A full sentence</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> 1 token ≈ 4 characters ≈ 0.75 words. Tokens are sub-word units, which is why API costs accumulate at scale.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> 1 token ≈ 0.75 words. Tokens are character-level chunks, not full words. This is how all LLM costs and limits are measured.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 03 / 10</div><div class="q-text">What is a "Context Window"?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> The maximum amount of text (tokens) an LLM can process at once — input + output combined</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> A pop-up that shows the AI's thinking process</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> The number of tabs you can have open in a chat interface</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> The timeframe of data the model was trained on</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> The context window is the LLM's "short-term memory" — the total tokens it can see at once, including both your input and its output.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> The context window = maximum tokens the model can process at once (input + output). Think of it as short-term memory — once exceeded, earlier content disappears.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 04 / 10</div><div class="q-text">For business data analysis (financial alerts, operational warnings), what temperature setting is appropriate?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> 0.9 — highly creative</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> 0.7 — moderately creative</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> 0.5 — balanced</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> 0.1 — consistent and deterministic</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Low temperature (0.1) = consistent, reliable output. Critical when you need accurate financial analysis, not creative interpretation.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> For business data analysis, use temperature 0.1 — low and consistent. High temperature is for creative tasks. Financial alerts need accuracy, not variation.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 05 / 10</div><div class="q-text">What is a System Prompt?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> The first message a user types</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Hidden instructions that set the model's role and rules before the conversation starts</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> A summary shown at the end of the conversation</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> An error message the model shows when it can't respond</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> A system prompt is hidden pre-conversation instructions — your primary lever for controlling AI behaviour in any product you build.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> A system prompt = hidden instructions the model receives before the conversation. The end user never sees them. It defines the AI's role, rules, and output format.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 06 / 10</div><div class="q-text">What does RAG stand for and what is the core idea?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Rapid AI Generation — training a model from scratch on your data</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Real-time Analytics Gateway — connecting databases to dashboards</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Retrieval Augmented Generation — retrieve live data and inject it into the prompt at query time</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Recursive Agent Graph — a multi-agent workflow system</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> RAG = Retrieval Augmented Generation. Retrieve relevant data → inject into the prompt → model analyses it. No fine-tuning required. This is how most production AI apps work.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> RAG = Retrieval Augmented Generation. You retrieve real data at query time and inject it into the prompt. The model analyses fresh data without needing to be retrained on it.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 07 / 10</div><div class="q-text">What is "Inference" in LLM terms?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> The act of running a prompt through an LLM to generate a response</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> The process of training the model on new data</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> The model's ability to make logical deductions</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> A type of fine-tuning technique</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Every time a model answers = one inference call. In production, inference is what you're billed for — per token, per call.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Inference = running a prompt through the model to get a response. Every AI answer you pay for = one inference call.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 08 / 10</div><div class="q-text">What is "Hallucination" in AI?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> When the AI goes offline unexpectedly</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> When the model refuses to answer a question</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> When the AI generates images instead of text</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> When an LLM confidently generates false or made-up information</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Hallucination = confidently generating false information. It's a fundamental LLM property — mitigated by grounding responses in real injected data rather than asking the model to recall facts.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Hallucination = when an LLM confidently makes something up. It's not a bug — it's inherent to how prediction works. Grounding prompts in real data is the primary mitigation.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 09 / 10</div><div class="q-text">What is the difference between Fine-tuning and Prompting?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Fine-tuning is free; prompting costs money</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Fine-tuning retrains the model on your data (expensive); prompting controls the model's behaviour via instructions (free, fast)</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Prompting retrains the model; fine-tuning just adjusts settings</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> They are the same thing with different names</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Fine-tuning = expensive model retraining on your data. Prompting = free instructions that shape behaviour. Well-designed prompting achieves 90% of fine-tuning's results at zero extra cost.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Fine-tuning = retraining the model (expensive, slow). Prompting = writing instructions (free, fast). Start with prompting — it gets you 90% of the way there.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 10 / 10</div><div class="q-text">When should you use a cheap/fast model like Claude Haiku instead of a frontier model like Opus?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Haiku is always better — it's faster</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Haiku has a larger context window</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> For simple, high-volume tasks like classification or threshold alerts — where cost efficiency matters</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Haiku is required for mobile applications</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Haiku = fast and cheap, ideal for simple high-volume tasks. Opus = powerful but expensive, for complex reasoning. Match model to task to control cost at scale.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Use Haiku for simple, high-volume tasks (classification, alerts, routing). Use Opus for complex multi-step reasoning. Matching model to task = cost efficiency at scale.</div></div>
+          <div class="quiz-submit"><button class="btn-submit" onclick="submitQuiz('m1')">Submit Answers</button><button class="btn-reset" onclick="resetQuiz('m1')">Reset</button></div>
+          <div class="quiz-result" id="result-m1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ MODULE 2 ══════════════════ -->
+  <div class="module-page" id="m2">
+    <div class="tab-content active" id="m2-lesson">
+      <div class="section-header">
+        <div class="sec-tag">Module 02 — Claude Deep Dive</div>
+        <h1 class="sec-title">Understanding Your Primary Tool</h1>
+        <p class="sec-desc">Claude is made by Anthropic. Understanding who built it, why, and how it compares to competitors makes you a sharper operator.</p>
+      </div>
+
+      <h2 class="sub">Anthropic — The Company</h2>
+      <p class="body">Founded in 2021 by former OpenAI researchers — Dario Amodei (CEO) and Daniela Amodei (President). Mission: build AI that is reliably helpful, harmless, and honest. Backed by Google and Amazon. Claude is their product.</p>
+      <p class="body">Their differentiator is alignment research — making sure AI does what you actually want, not just what you literally said. In practice: Claude follows complex structured instructions more reliably and hallucinates less confidently than most competitors.</p>
+
+      <h2 class="sub">The Claude Model Family</h2>
+      <table class="compare-table">
+        <thead><tr><th>Model</th><th>Best For</th><th>Speed</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td><span class="col-name">Claude Opus 4</span></td><td>Deep reasoning, strategy, hard problems</td><td>Slower</td><td>Highest</td></tr>
+          <tr><td><span class="col-name">Claude Sonnet 4</span></td><td>Production apps, automation, most daily tasks</td><td>Fast</td><td>Mid</td></tr>
+          <tr><td><span class="col-name">Claude Haiku 4</span></td><td>High-volume simple tasks, routing, alerts</td><td>Fastest</td><td>Lowest</td></tr>
+        </tbody>
+      </table>
+
+      <h2 class="sub">Claude vs The Competition</h2>
+      <table class="compare-table">
+        <thead><tr><th>Capability</th><th>Claude</th><th>GPT-4o</th><th>Gemini</th></tr></thead>
+        <tbody>
+          <tr><td>Following complex instructions</td><td><span class="pill pill-green">Best</span></td><td><span class="pill pill-blue">Very Good</span></td><td><span class="pill pill-orange">Good</span></td></tr>
+          <tr><td>Coding ability</td><td><span class="pill pill-green">Excellent</span></td><td><span class="pill pill-green">Excellent</span></td><td><span class="pill pill-blue">Good</span></td></tr>
+          <tr><td>Context window</td><td><span class="pill pill-green">200K tokens</span></td><td><span class="pill pill-blue">128K tokens</span></td><td><span class="pill pill-green">1M+ (Gemini 1.5)</span></td></tr>
+          <tr><td>Reliability / hallucination control</td><td><span class="pill pill-green">Best</span></td><td><span class="pill pill-blue">Very Good</span></td><td><span class="pill pill-orange">Good</span></td></tr>
+          <tr><td>Ecosystem / integrations</td><td><span class="pill pill-blue">Good</span></td><td><span class="pill pill-green">Best</span></td><td><span class="pill pill-blue">Good</span></td></tr>
+          <tr><td>Image generation</td><td><span class="pill pill-red">No (text only)</span></td><td><span class="pill pill-green">Yes (DALL-E)</span></td><td><span class="pill pill-green">Yes (Imagen)</span></td></tr>
+        </tbody>
+      </table>
+
+      <h2 class="sub">Prompting Techniques — Your Most Valuable Skill</h2>
+      <div class="card-grid">
+        <div class="card"><div class="card-label">Technique 01</div><h3>Role Assignment</h3><p>"You are a senior financial analyst specialising in operational efficiency." This shapes everything that follows. The model performs better with a specific identity and context.</p></div>
+        <div class="card"><div class="card-label">Technique 02</div><h3>Output Format Specification</h3><p>"Respond in JSON with keys: insights[], severity (info|warn|danger), action_required (bool)." Exact format = reliable, parseable, programmable output every time.</p></div>
+        <div class="card"><div class="card-label">Technique 03</div><h3>Chain of Thought</h3><p>"Before answering, reason through the problem step by step." Forces reasoning before conclusions — dramatically improves accuracy on complex multi-variable tasks.</p></div>
+        <div class="card"><div class="card-label">Technique 04</div><h3>Few-Shot Examples</h3><p>Show 2-3 ideal input/output examples before your real request. "Here are examples of good output: [x, y]. Now generate for this input:" The model calibrates to your exact standard.</p></div>
+        <div class="card"><div class="card-label">Technique 05</div><h3>Negative Constraints</h3><p>"Do NOT include any preamble. Do NOT explain your reasoning. Output ONLY valid JSON." Tell the model what NOT to do — just as important as what to do.</p></div>
+        <div class="card"><div class="card-label">Technique 06</div><h3>XML Tags for Structure</h3><p>Wrap sections in XML tags: &lt;data&gt;...&lt;/data&gt; &lt;rules&gt;...&lt;/rules&gt;. Claude responds well to structured XML prompts — especially useful for long, complex system prompts.</p></div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">Example — Well-Structured System Prompt</div>
+        <code><span class="comment">// System Prompt (hidden from end user)</span>
+<span class="kw">SYSTEM:</span> <span class="str">"You are a business performance analyst.
+&lt;rules&gt;
+- Analyse only the data provided — do not speculate.
+- Flag any metric more than 10% outside its target as a warning.
+- Output ONLY valid JSON. No prose. No markdown.
+- Order insights by severity: danger first, then warn, then info.
+&lt;/rules&gt;"</span>
+
+<span class="comment">// User Message (contains live injected data)</span>
+<span class="kw">USER:</span> <span class="str">"&lt;data&gt;[your business data here]&lt;/data&gt;
+Generate up to 5 insights ordered by priority."</span>
+
+<span class="comment">// Model returns structured, predictable output</span>
+{ <span class="str">"insights"</span>: [
+  { <span class="str">"type"</span>: <span class="str">"cost"</span>, <span class="str">"severity"</span>: <span class="str">"danger"</span>,
+    <span class="str">"message"</span>: <span class="str">"Labour 18% over target — immediate action needed"</span> }
+]}</code>
+      </div>
+    </div>
+
+    <div class="tab-content" id="m2-quiz">
+      <div class="quiz-section">
+        <div class="quiz-header"><div class="quiz-tag">Module 02 — Knowledge Check</div><h2>Claude Deep Dive Quiz</h2><p>10 questions. Select your answer then hit Submit.</p></div>
+        <div id="quiz-m2">
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 01 / 10</div><div class="q-text">Who founded Anthropic and what is their stated mission?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Elon Musk — to build the most powerful AI possible</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Dario & Daniela Amodei (ex-OpenAI) — AI safety</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Sam Altman — to compete with Google</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Google DeepMind — to unify AI research globally</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Dario and Daniela Amodei left OpenAI to found Anthropic in 2021 with an AI safety mission. Backed by Google and Amazon.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Anthropic was founded by Dario and Daniela Amodei — former OpenAI researchers — with a stated mission of AI safety.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 02 / 10</div><div class="q-text">Which Claude model is the best default for production applications?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Claude Opus — most powerful</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Claude Haiku — fastest</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Claude Sonnet — balanced performance and cost</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> GPT-4o — OpenAI's production model</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Claude Sonnet is the production default — powerful enough for complex tasks, fast and cost-effective enough for daily use at scale.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Claude Sonnet hits the sweet spot — capability, speed, and cost for production. Opus is for hard problems. Haiku for volume.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 03 / 10</div><div class="q-text">What is Claude's context window size?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> 200,000 tokens</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> 8,000 tokens</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> 32,000 tokens</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> 1 million tokens</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> 200,000 tokens — one of the largest available. Large enough to process entire documents, codebases, or complex multi-source data payloads in one call.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Claude's context window is 200,000 tokens. 1M+ is Gemini 1.5. GPT-4o has 128K. Claude's 200K is among the best for practical production use.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 04 / 10</div><div class="q-text">Where is Claude's strongest competitive advantage vs GPT-4o?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Image generation</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Ecosystem and integrations</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Voice capabilities</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Following complex structured instructions reliably</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Claude's alignment research means it follows complex, multi-rule instructions more reliably — critical for production systems that depend on consistent structured output.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Claude's edge = instruction-following reliability. GPT has better ecosystem. Claude's strength is doing exactly what you specify, consistently, even in complex multi-constraint prompts.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 05 / 10</div><div class="q-text">What is a System Prompt and who sees it?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> The user's first message — visible to both parties</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Hidden pre-conversation instructions — only the model processes it, not the end user</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> A summary shown at the end of the conversation</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> A paid feature for enterprise users</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> System prompts are hidden instructions the model receives before the conversation. The end user never sees them — they just see the shaped output.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> A system prompt = hidden pre-conversation instructions. The end user never sees them. It's how you control AI behaviour in your product without exposing your logic.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 06 / 10</div><div class="q-text">What does "Chain of Thought" prompting do?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Links multiple AI models together in sequence</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Generates multiple responses and picks the best</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Forces the model to reason step-by-step before giving a final answer</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Connects the current conversation to previous chat history</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Chain of thought = "work through this step by step before answering." Dramatically improves accuracy on complex multi-variable analysis tasks.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Chain of thought instructs the model to reason through problems step-by-step before concluding. It significantly improves accuracy on complex tasks.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 07 / 10</div><div class="q-text">Why use XML tags in a Claude system prompt?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Claude is trained to respond well to XML structure — improves reliability on complex multi-part prompts</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> XML tags make the prompt load faster</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> They're technically required for the API to function</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> They encrypt the system prompt from external access</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Claude is trained to respond well to XML structure. Using &lt;rules&gt; &lt;data&gt; &lt;output&gt; tags helps separate concerns and improves instruction-following on complex prompts.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> XML tags are a prompting best practice — not a technical requirement. They help Claude parse complex system prompts more reliably. Anthropic specifically recommends them.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 08 / 10</div><div class="q-text">What is "Few-Shot" prompting?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Using the cheapest model to save money</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Limiting the model to short responses only</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Running the same prompt multiple times to compare</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Showing the model 2-3 examples of ideal input/output pairs before your real request</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Few-shot = show examples first. "Here are 2 good outputs: [x], [y]. Now generate for this input." The model calibrates to your exact standard.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Few-shot prompting = providing 2-3 example input/output pairs. The model learns your desired quality and format from those examples before seeing your real request.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 09 / 10</div><div class="q-text">What does "Alignment Research" mean in the context of Anthropic?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Research into making AI models smaller and more efficient</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Making sure AI does what you actually want, not just what you literally said</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Aligning AI outputs with competitor benchmarks</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Syncing AI outputs across multiple server regions</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Alignment = AI understanding intent, not just literal instructions. This is why Claude handles nuanced, complex multi-rule prompts more reliably than most competitors.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Alignment research = making AI do what you actually intend. Understanding intent beyond literal words. It's why Claude follows complex instructions reliably.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 10 / 10</div><div class="q-text">Claude cannot generate images. Which two competitors can?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Claude can generate images — you just need a Pro account</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Claude is text-only; only Gemini can generate images</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Claude is text-only; GPT-4o can (via DALL-E), Gemini can (via Imagen)</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Only Meta's Llama can generate images</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Claude = text-only. GPT-4o integrates DALL-E for image generation. Gemini has Imagen. For text analysis and reasoning tasks, Claude remains the strongest choice.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Claude is text-only. GPT-4o has DALL-E integration. Gemini has Imagen. If image generation is needed, GPT-4o or Gemini are the options.</div></div>
+          <div class="quiz-submit"><button class="btn-submit" onclick="submitQuiz('m2')">Submit Answers</button><button class="btn-reset" onclick="resetQuiz('m2')">Reset</button></div>
+          <div class="quiz-result" id="result-m2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ MODULE 3 ══════════════════ -->
+  <div class="module-page" id="m3">
+    <div class="tab-content active" id="m3-lesson">
+      <div class="section-header">
+        <div class="sec-tag">Module 03 — Agentic AI</div>
+        <h1 class="sec-title">When AI Takes Action, Not Just Advice</h1>
+        <p class="sec-desc">Standard LLMs respond to prompts. Agentic AI takes sequences of actions, uses tools, and completes multi-step tasks autonomously. This is where most AI product value is being built right now.</p>
+      </div>
+
+      <div class="diagram">
+        <h4>AI Capability Spectrum</h4>
+        <div class="arch-row">
+          <div class="arch-node"><div class="an-label">Level 1</div><div class="an-name">Reactive</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node"><div class="an-label">Level 2</div><div class="an-name">Assisted</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node blue"><div class="an-label">Level 3</div><div class="an-name">Tool-Using</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node green"><div class="an-label">Level 4</div><div class="an-name">Agentic</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node orange"><div class="an-label">Level 5</div><div class="an-name">Multi-Agent</div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:14px;gap:8px;flex-wrap:wrap;">
+          <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;flex:1;text-align:center;min-width:80px;">Chatbot. Responds only.</div>
+          <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;flex:1;text-align:center;min-width:80px;">Summarises, drafts. Still reactive.</div>
+          <div style="font-size:11px;color:#60a5fa;font-family:'DM Mono',monospace;flex:1;text-align:center;min-width:80px;">AI + live tools & APIs.</div>
+          <div style="font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;flex:1;text-align:center;min-width:80px;">Plans & executes multi-step goals.</div>
+          <div style="font-size:11px;color:var(--warn);font-family:'DM Mono',monospace;flex:1;text-align:center;min-width:80px;">Multiple AI agents collaborate.</div>
+        </div>
+      </div>
+
+      <h2 class="sub">Key Terminology</h2>
+      <div class="def-block"><div class="term">Tool Use / Function Calling</div><div class="def">The ability to give an LLM access to external functions it can call during a conversation — search the web, query a database, call an API, run code. This is what makes AI useful in production. It can interact with the real world, not just its training data.</div><div class="example">Example: A customer support AI that can look up actual order status in your database before answering. Without tool use, it would have to guess.</div></div>
+      <div class="def-block"><div class="term">MCP — Model Context Protocol</div><div class="def">Anthropic's open standard for connecting AI models to external data sources and tools. A universal plug. Instead of every developer writing custom integrations, MCP provides a standard interface that any compatible tool can plug into.</div></div>
+      <div class="def-block"><div class="term">Agent Loop</div><div class="def">The process an agentic AI follows: (1) Observe current state → (2) Plan next action → (3) Execute via tool → (4) Observe result → (5) Done or loop again. The human defines the goal. The agent figures out the steps.</div></div>
+      <div class="def-block"><div class="term">Autonomous vs Supervised Agents</div><div class="def">Autonomous agents complete tasks without checking back. Supervised agents pause at key decisions for human approval. For any system that touches real money, data, or communications — supervised is safer. Build trust before granting autonomy.</div></div>
+      <div class="def-block"><div class="term">Orchestrator Agent</div><div class="def">In a multi-agent system, the orchestrator coordinates specialised agents, receives their outputs, resolves conflicts, and delivers a unified result. The "manager" in a team of AI specialists.</div></div>
+
+      <h2 class="sub">Real-World Agentic AI Examples</h2>
+      <div class="card-grid">
+        <div class="card"><div class="card-label">Level 3 — Tool-Using</div><h3>AI Customer Support</h3><p>AI receives a question → calls your order database → reads actual order status → gives an accurate, real-time answer. Not guessing from training data — reading live data via a tool.</p></div>
+        <div class="card"><div class="card-label">Level 4 — Agentic</div><h3>AI Research Assistant</h3><p>Given "write a competitive analysis of the top 5 CRMs," the agent: searches the web, reads product pages, pulls pricing, reads reviews, synthesises into a report. Multiple tool calls, no human intervention.</p></div>
+        <div class="card"><div class="card-label">Level 5 — Multi-Agent</div><h3>AI Operations Platform</h3><p>Separate specialised agents for finance, marketing, HR, and ops — each monitoring their domain. An Orchestrator Agent synthesises their daily outputs into an executive brief. The future of business intelligence.</p></div>
+      </div>
+
+      <div class="callout warn">
+        <span class="callout-icon">⚠</span>
+        <div class="callout-text"><strong>The Autonomy Trap</strong>The temptation is to make agents fully autonomous as fast as possible. Resist it. Supervised agents that ask for approval at key decisions build trust, catch errors, and stay safe. Give agents more autonomy incrementally as they prove reliability. Move fast on capability, slow on autonomy.</div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="m3-quiz">
+      <div class="quiz-section">
+        <div class="quiz-header"><div class="quiz-tag">Module 03 — Knowledge Check</div><h2>Agentic AI Quiz</h2><p>10 questions. Select your answer then hit Submit.</p></div>
+        <div id="quiz-m3">
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 01 / 10</div><div class="q-text">What is the key difference between a standard LLM and an Agentic AI?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Agentic AI is always more expensive to run</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Agentic AI can only work on coding tasks</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Agentic AI takes sequences of actions using tools — not just responding to prompts</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Agentic AI doesn't require a system prompt</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Standard LLMs respond. Agentic AI acts — it uses tools, executes multi-step tasks, and loops until a goal is achieved.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Standard LLMs respond to prompts. Agentic AI takes sequences of actions using tools to complete multi-step goals autonomously.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 02 / 10</div><div class="q-text">What does "Tool Use" or "Function Calling" mean in AI?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Using multiple AI tools in a side-by-side comparison</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Giving an LLM access to external functions it can call — APIs, databases, web search</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> The AI selecting which coding language to use</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Running a prompt through multiple models simultaneously</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Tool use = the AI can call external functions during a conversation. This is what makes AI useful in production — it interacts with the real world, not just its training data.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Tool use = giving the LLM access to external functions: APIs, databases, search, code runners. Without tool use, AI can only recall from training. With it, it can act.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 03 / 10</div><div class="q-text">What does MCP stand for and who created it?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Model Context Protocol — created by Anthropic</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Multi-Cloud Pipeline — created by AWS</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Machine Cognition Platform — created by OpenAI</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Module Control Protocol — created by Microsoft</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Model Context Protocol — Anthropic's open standard for connecting AI models to external tools and data. A universal plug for AI integrations.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> MCP = Model Context Protocol, created by Anthropic. An open standard that lets AI models connect to external tools without every developer writing custom integrations.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 04 / 10</div><div class="q-text">What is the "Agent Loop"?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> A bug where the AI keeps repeating itself</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> A type of circular data pipeline</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> The training cycle for a new AI model</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Observe → Plan → Execute → Observe → Repeat until goal achieved</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> The agent loop is what turns a one-shot LLM into a goal-completing agent. It checks results after each action and continues until the goal is reached.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Agent loop = Observe → Plan → Execute → Observe → Repeat. The AI checks its results after each action and keeps going until the goal is complete.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 05 / 10</div><div class="q-text">For AI systems that touch real money or sensitive data, should agents be Autonomous or Supervised?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Autonomous — speed is the primary advantage of AI</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Supervised — AI should alert and recommend; humans approve before action is taken</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Autonomous — users don't want approval friction</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Neither — agents should never be used in financial systems</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Supervised. AI alerts, recommends, and drafts — a human approves before anything consequential happens. Trust is built through transparency, then autonomy is extended gradually.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Supervised agents are right for high-stakes systems. Alert and recommend → human approves. Autonomy is earned through demonstrated reliability, not assumed from the start.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 06 / 10</div><div class="q-text">What is an "Orchestrator Agent"?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> The coordinating agent that receives outputs from specialised agents and produces a unified result</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> The agent that handles music and audio processing</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> The first agent to run in any sequence</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> An agent that only works with structured JSON data</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> The orchestrator coordinates specialised agents, synthesises their outputs, and delivers a unified result. The "manager" in a multi-agent team.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> An orchestrator agent coordinates specialised agents, resolves conflicts between outputs, and delivers a unified result. It's the manager in a multi-agent system.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 07 / 10</div><div class="q-text">What level on the AI capability spectrum does a chatbot that only answers questions sit at?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Level 3 — Tool-Using</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Level 4 — Agentic</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Level 1 — Reactive</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Level 5 — Multi-Agent</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Level 1 — Reactive. It responds to prompts with no access to tools, no ability to take actions. Most early AI products were at this level.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> A Q&A chatbot = Level 1 (Reactive). It only responds — no tools, no actions, no loops. The spectrum goes up from there as AI gains the ability to act.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 08 / 10</div><div class="q-text">An AI research assistant that autonomously searches the web, reads multiple pages, and synthesises a report is operating at what level?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Level 1 — Reactive</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Level 2 — Assisted</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Level 3 — Tool-Using</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Level 4 — Agentic</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Level 4 — Agentic. It plans, executes multiple tool calls, observes results, and loops until the goal is achieved. No hand-holding needed.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Multi-step autonomous task completion = Level 4 (Agentic). The agent plans, executes tool calls, observes results, and loops — all without human intervention between steps.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 09 / 10</div><div class="q-text">What is the main risk of moving to fully autonomous agents too quickly?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Autonomous agents are always more expensive</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Errors compound without human checkpoints — trust is broken before it's built</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Autonomous agents can't use APIs</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Autonomous agents require a different programming language</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Autonomous agents make mistakes without checkpoints to catch them. One compounding error in a financial or operational system destroys trust fast. Earn autonomy — don't assume it.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> The risk: errors compound without human checkpoints. In high-stakes systems, one uncaught mistake breaks trust. Supervised → incremental autonomy is the right path.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 10 / 10</div><div class="q-text">In a multi-agent system where separate AI agents handle Finance, Marketing, and Operations, what synthesises their outputs?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> The largest model in the chain</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> A human analyst</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> An Orchestrator Agent</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> A database merge function</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> The Orchestrator Agent coordinates the specialised agents, resolves conflicts between their outputs, and delivers a unified result — the "executive summary" across domains.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> An Orchestrator Agent coordinates all the specialised agents and synthesises their domain outputs into a unified result. It's the management layer of a multi-agent system.</div></div>
+          <div class="quiz-submit"><button class="btn-submit" onclick="submitQuiz('m3')">Submit Answers</button><button class="btn-reset" onclick="resetQuiz('m3')">Reset</button></div>
+          <div class="quiz-result" id="result-m3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ MODULE 4 ══════════════════ -->
+  <div class="module-page" id="m4">
+    <div class="tab-content active" id="m4-lesson">
+      <div class="section-header">
+        <div class="sec-tag">Module 04 — Ecosystem Map</div>
+        <h1 class="sec-title">The AI Landscape Right Now</h1>
+        <p class="sec-desc">Who's who, what they build, and why it matters when you're building with AI or talking about it in a room of non-technical people.</p>
+      </div>
+
+      <h2 class="sub">The Foundational Model Companies</h2>
+      <p class="body">These companies build the base AI models everything else runs on. Think of them as engine manufacturers — other builders put their engines into their products.</p>
+      <table class="compare-table">
+        <thead><tr><th>Company</th><th>Key Product</th><th>Backed By</th><th>Known For</th></tr></thead>
+        <tbody>
+          <tr><td><span class="col-name">Anthropic</span></td><td>Claude (Opus, Sonnet, Haiku)</td><td>Google, Amazon</td><td>Safety focus, instruction-following, large context</td></tr>
+          <tr><td><span class="col-name">OpenAI</span></td><td>GPT-4o, o1, ChatGPT</td><td>Microsoft</td><td>Ecosystem, integrations, broadest adoption</td></tr>
+          <tr><td><span class="col-name">Google DeepMind</span></td><td>Gemini 1.5, 2.0</td><td>Google</td><td>Multimodal (vision + text), massive context (1M+)</td></tr>
+          <tr><td><span class="col-name">Meta AI</span></td><td>Llama 3 (open source)</td><td>Meta</td><td>Open source — run locally, zero API cost</td></tr>
+          <tr><td><span class="col-name">Mistral</span></td><td>Mistral, Mixtral</td><td>EU-based</td><td>EU data compliance, open source, efficient</td></tr>
+        </tbody>
+      </table>
+
+      <h2 class="sub">The Build Layer — Tools You'll Use</h2>
+      <div class="card-grid">
+        <div class="card"><div class="card-label">AI Coding Assistant</div><h3>Cursor</h3><p>VS Code with AI built in. Write code WITH AI inline — not copy-pasting between windows. The primary tool for anyone building with AI. Dramatically accelerates development speed.</p></div>
+        <div class="card"><div class="card-label">Workflow Automation</div><h3>n8n</h3><p>Open source visual automation. Self-hostable. Connects apps, transforms data, runs on a schedule. Powerful and free at scale — the go-to for building data pipelines without writing full code.</p></div>
+        <div class="card"><div class="card-label">Automation Platform</div><h3>Make (Integromat)</h3><p>1,000+ app connectors. Easier than n8n for non-technical setups. Good for multi-app workflow automation, client onboarding flows, and trigger/action chains.</p></div>
+        <div class="card"><div class="card-label">Agent Framework</div><h3>LangChain / LangGraph</h3><p>Python frameworks for building multi-step AI agents with state management. The technical backbone for Level 4-5 agentic systems. Your developer will know this.</p></div>
+        <div class="card"><div class="card-label">AI Research</div><h3>Perplexity</h3><p>AI-powered web search with source citations. Use for competitor research, tracking AI tool launches, and staying ahead on fast-moving topics. Better synthesised than Google for AI news.</p></div>
+        <div class="card"><div class="card-label">Deployment</div><h3>Vercel / Railway</h3><p>Where production apps live. Vercel for frontend. Railway for backend Node.js servers. Both auto-scale, have generous free tiers, and deploy in minutes from a GitHub repo.</p></div>
+      </div>
+
+      <h2 class="sub">How to Stay Current</h2>
+      <div class="card-grid">
+        <div class="card"><div class="card-label">Daily · 5 min</div><h3>The Rundown AI</h3><p>therundown.ai — best signal-to-noise ratio in AI news. Read at breakfast. Know what shipped before the people you're talking to do.</p></div>
+        <div class="card"><div class="card-label">Weekly</div><h3>Ben's Bites</h3><p>bensbites.co — business-focused AI news. Product launches, funding rounds, what's changing in the tools you use.</p></div>
+        <div class="card"><div class="card-label">Social</div><h3>@AnthropicAI · @sama · @ylecun</h3><p>Real-time announcements come here first. Anthropic for Claude updates. Sam Altman (OpenAI) and Yann LeCun (Meta) for different perspectives on AI direction.</p></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="m4-quiz">
+      <div class="quiz-section">
+        <div class="quiz-header"><div class="quiz-tag">Module 04 — Knowledge Check</div><h2>Ecosystem Map Quiz</h2><p>10 questions. Select your answer then hit Submit.</p></div>
+        <div id="quiz-m4">
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 01 / 10</div><div class="q-text">Which major companies back Anthropic?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Google and Amazon</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Microsoft and Apple</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Meta and Tesla</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> OpenAI and Nvidia</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Anthropic is backed by Google and Amazon — two of the world's largest cloud providers, giving Claude significant infrastructure and distribution reach.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Anthropic is backed by Google and Amazon. Microsoft backs OpenAI. Meta funds Llama independently. Google and Amazon chose Anthropic.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 02 / 10</div><div class="q-text">What is Llama and what makes it different from Claude or GPT?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> A closed-source model from Google</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> An image generation model from Anthropic</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Meta's open-source LLM — free to download and run locally</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> A payment processing AI from Stripe</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Llama is Meta's open-source LLM. You can run it on your own hardware — zero ongoing API cost. The tradeoff: you need infrastructure and capability is generally below frontier models.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Llama = Meta's open-source LLM. Free to download, run locally, no API fees. The tradeoff: you manage the infrastructure and it's generally less capable than frontier models.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 03 / 10</div><div class="q-text">What is Cursor and why is it relevant to AI builders?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> A database tool for storing AI outputs</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> An AI-powered code editor — write code with AI inline, not by copy-pasting from separate windows</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> A competitor to ChatGPT for consumers</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> A project management tool for AI teams</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Cursor = VS Code + AI inline. Instead of switching tabs to copy-paste Claude's code suggestions, you work directly in your project with AI as a coding partner. Major productivity gain.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Cursor is an AI-powered code editor. Instead of copy-pasting between a chat window and your code, you write directly with AI assistance in the project. It's how serious builders ship faster.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 04 / 10</div><div class="q-text">What is n8n and what type of problem does it solve?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> An AI model for generating business insights</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> A customer relationship management tool</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> A competitor to Perplexity for AI search</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Open-source workflow automation — connects apps, transforms data, runs pipelines on a schedule</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> n8n is open-source workflow automation. Free to self-host, handles data transforms via code nodes, and scales without per-run pricing. Critical for production data pipelines.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> n8n = open-source workflow automation. Connects apps, transforms data, runs on schedules. Free to self-host — critical for building automated data pipelines without ballooning costs.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 05 / 10</div><div class="q-text">What is Microsoft's relationship with OpenAI?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Major investor — integrates GPT across Azure, Office 365, and Bing</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Microsoft owns OpenAI outright</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Competitors with no financial relationship</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> OpenAI was spun out of Microsoft's research division</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Microsoft invested heavily in OpenAI and distributes GPT through Azure, Office, and Bing. This is why GPT has the strongest enterprise ecosystem — Microsoft's distribution is enormous.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Microsoft is OpenAI's major investor and integrates GPT across Azure, Office 365, and Bing. This is why GPT has the broadest enterprise reach of any AI model.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 06 / 10</div><div class="q-text">What is the primary advantage of open-source models (Llama, Mistral) over proprietary models?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> They are always more capable</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> They have better customer support</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Self-hosted — zero ongoing API cost and full data privacy control</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> They are easier to prompt</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Run on your own hardware — no per-token API costs and no data leaves your infrastructure. Matters for privacy-sensitive deployments or high-volume use cases.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Open-source models can be self-hosted — zero ongoing API cost and full data sovereignty. The tradeoff: you need infrastructure and capability is generally below frontier models.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 07 / 10</div><div class="q-text">What is Perplexity and how should AI builders use it?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> A project management tool for AI development</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> A customer support chatbot builder</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> A data visualisation platform</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> AI-powered web search with citations — ideal for competitive research and tracking fast-moving AI news</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Perplexity = AI-powered search with source citations. Better synthesised than Google for fast-moving topics. Use it for competitor research, tracking AI tool launches, and industry developments.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Perplexity = AI search with citations. Use it to research competitors, track new AI tools, and understand fast-moving industry developments. Better signal than Google for AI topics.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 08 / 10</div><div class="q-text">What does Vercel host in a typical production AI app architecture?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> The AI model weights</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> The frontend — the user-facing web interface</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> The backend server and API routes</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> The database</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Vercel hosts the frontend. Railway typically hosts the Node.js backend. Both auto-scale and have generous free tiers — ideal for getting production apps live fast.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Vercel hosts the frontend (the HTML/JS/CSS your users see). The backend server goes on Railway or a similar platform. Both handle auto-scaling.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 09 / 10</div><div class="q-text">Which newsletter gives the best daily AI signal-to-noise?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> The Rundown AI — 5-minute daily brief</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Wall Street Journal tech section</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Reddit r/MachineLearning</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> TechCrunch daily digest</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> The Rundown AI — daily 5-minute brief, best signal-to-noise. Read at breakfast. Know what shipped before the people you're talking to do.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> The Rundown AI is the recommended daily source. 5 minutes, high signal. The goal: know what matters before the people you're working with or selling to do.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 10 / 10</div><div class="q-text">What is LangChain/LangGraph used for?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Hosting AI applications in production</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Building no-code automation workflows</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Building multi-step AI agent workflows with state management in Python</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Connecting to open-source models only</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> LangChain/LangGraph are Python frameworks for building stateful, multi-step AI agents. The technical backbone for Level 4-5 agentic systems that need to remember context across steps.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> LangGraph = Python framework for stateful multi-step AI agents. When an agent needs to remember where it is in a multi-step workflow, LangGraph manages that state. Essential for Level 4-5 systems.</div></div>
+          <div class="quiz-submit"><button class="btn-submit" onclick="submitQuiz('m4')">Submit Answers</button><button class="btn-reset" onclick="resetQuiz('m4')">Reset</button></div>
+          <div class="quiz-result" id="result-m4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ MODULE 5 ══════════════════ -->
+  <div class="module-page" id="m5">
+    <div class="tab-content active" id="m5-lesson">
+      <div class="section-header">
+        <div class="sec-tag">Module 05 — Automation & Workflows</div>
+        <h1 class="sec-title">Making Your Systems Run Without You</h1>
+        <p class="sec-desc">AI without automation is a one-time trick. AI with automation is a business. This module covers how to build workflows that run 24/7 with zero manual input.</p>
+      </div>
+
+      <h2 class="sub">AI Automation vs Traditional Automation</h2>
+      <div class="card-grid">
+        <div class="card"><div class="card-label">Traditional Automation</div><h3>Rule-Based</h3><p>If X happens → do Y. Rigid. Can't handle edge cases or varied input formats. Good for: sending emails when a form is filled, copying files on a schedule, simple trigger/action chains.</p></div>
+        <div class="card"><div class="card-label">AI Automation</div><h3>Intelligence-Based</h3><p>Understands context, handles exceptions, adapts to varied input. Analyses complex multi-variable data and tells you what to act on. The nuance is AI's advantage over rigid rules.</p></div>
+      </div>
+
+      <div class="callout">
+        <span class="callout-icon">⚡</span>
+        <div class="callout-text"><strong>Use Both Together</strong>Traditional automation handles the scheduled, mechanical work (pull data, transform format, push to API). AI handles the analysis layer (given this data, what matters and why). They stack. Don't choose — combine them.</div>
+      </div>
+
+      <h2 class="sub">Core Workflow Patterns</h2>
+      <div class="def-block"><div class="term">Trigger → Action</div><div class="def">The simplest pattern. An event triggers a response. New file uploaded → process it. New customer signs up → send welcome email. The foundation of all automation — n8n, Make, and Zapier are all built on this pattern.</div></div>
+      <div class="def-block"><div class="term">Polling Loop</div><div class="def">Check for new data on a schedule. Every hour, check if there's new sales data. Every night, pull tomorrow's bookings. Reliable and simple — but not real-time.</div></div>
+      <div class="def-block"><div class="term">Webhook</div><div class="def">Push-based instead of pull-based. Instead of you checking every hour, the source system notifies you the instant something changes. Faster, more efficient than polling. Requires the source system to support webhooks.</div><div class="example">Example: Instead of checking for new orders every 30 minutes, your e-commerce platform sends a webhook to your system the moment an order is placed. Instant, zero wasted polling calls.</div></div>
+      <div class="def-block"><div class="term">Data Transform</div><div class="def">Converting raw data from its source format into your system's standard schema. Every external system outputs data differently — transforms are the glue that standardises everything before analysis.</div><div class="example">Example: A CRM exports contacts as CSV with column "First_Name". Your system expects "firstName". A transform renames the column. Simple but critical for reliable data pipelines.</div></div>
+
+      <h2 class="sub">No-Code / Low-Code Automation Tools</h2>
+      <table class="compare-table">
+        <thead><tr><th>Tool</th><th>Difficulty</th><th>Cost</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td><span class="col-name">Zapier</span></td><td>Easiest</td><td>Highest at scale</td><td>Fast prototyping, simple trigger/action</td></tr>
+          <tr><td><span class="col-name">Make (Integromat)</span></td><td>Easy–Medium</td><td>Mid</td><td>Complex flows, 1,000+ app connectors</td></tr>
+          <tr><td><span class="col-name">n8n ✓</span></td><td>Medium</td><td>Free (self-hosted)</td><td>Data pipelines, custom code nodes, scale</td></tr>
+          <tr><td><span class="col-name">LangGraph</span></td><td>Code-required</td><td>Low</td><td>Stateful multi-step AI agent workflows</td></tr>
+        </tbody>
+      </table>
+
+      <div class="diagram">
+        <h4>A Fully Automated AI Pipeline</h4>
+        <div class="arch-row">
+          <div class="arch-node orange"><div class="an-label">Trigger</div><div class="an-name">New Data Available</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node"><div class="an-label">n8n</div><div class="an-name">Transform & Validate</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node blue"><div class="an-label">API</div><div class="an-name">Send to System</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node"><div class="an-label">Claude</div><div class="an-name">AI Analysis</div></div>
+          <span class="arch-arrow">→</span>
+          <div class="arch-node green"><div class="an-label">Output</div><div class="an-name">Dashboard + Alert</div></div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <span class="callout-icon">🎯</span>
+        <div class="callout-text"><strong>The Pitch</strong>When explaining an automated AI system to a non-technical person: "Your data feeds in automatically. Every few hours, the system analyses everything and surfaces what you need to act on. You don't set it up every day — it just runs." That's the value of automation + AI. Lead with outcomes, not architecture.</div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="m5-quiz">
+      <div class="quiz-section">
+        <div class="quiz-header"><div class="quiz-tag">Module 05 — Knowledge Check</div><h2>Automation & Workflows Quiz</h2><p>10 questions. Select your answer then hit Submit.</p></div>
+        <div id="quiz-m5">
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 01 / 10</div><div class="q-text">What is the key difference between traditional and AI automation?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Traditional automation is always faster</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> AI automation handles context and exceptions; traditional is rigid rule-based (if X → do Y)</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> AI automation is cheaper to run</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Traditional automation uses APIs; AI does not</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Traditional = rigid if/then rules. AI = contextual intelligence that handles nuance and exceptions. Stack both: traditional for mechanics, AI for analysis.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Traditional = rigid rules. AI = contextual. The best systems stack both: traditional handles the mechanical pipeline, AI handles the analysis layer.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 02 / 10</div><div class="q-text">What is a Webhook and how does it differ from Polling?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> A webhook is slower than polling</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Polling is push-based; webhook is pull-based</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Polling checks on a schedule; a webhook is push-based — the source notifies you instantly when something changes</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Webhooks only work with paid enterprise APIs</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Polling = you ask every X minutes. Webhook = they notify you instantly. Webhooks are more efficient and real-time — the upgrade path from scheduled polling.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Polling = you check on a schedule. Webhook = the source pushes updates to you instantly when data changes. Webhooks are more efficient and deliver truly real-time data.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 03 / 10</div><div class="q-text">What is a "Data Transform" in a workflow pipeline?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Converting raw data from its source format into your system's standard schema</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Encrypting data before storing it securely</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Converting images to text using AI vision models</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Translating content into different languages automatically</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> A data transform converts raw source data into your system's standard format. Every external system outputs data differently — transforms are the glue that makes everything compatible.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> A data transform = converting source data format into your standard schema. CRM exports "First_Name" → your system wants "firstName" → transform handles the rename. Critical pipeline step.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 04 / 10</div><div class="q-text">What is the simplest automation pattern?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Agent Loop</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> RAG Pipeline</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Multi-Agent Orchestration</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Trigger → Action</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Trigger → Action. An event happens → something responds. All automation complexity is just chained trigger/actions with transforms in between.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Trigger → Action is the simplest pattern. Everything else is just chained trigger/actions with data transforms. Start here.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 05 / 10</div><div class="q-text">Which automation tool is best for high-volume data pipelines at scale, and why?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Zapier — easiest to use</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> n8n — open source, self-hostable, free at scale, supports custom code nodes</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Make — most app connectors</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> LangGraph — most powerful for agents</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> n8n = free to self-host, custom code nodes for complex transforms, no per-task pricing. At high volume, Zapier's cost becomes significant. n8n scales without that constraint.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> n8n is the right call for scale. Free to self-host, supports custom code, no per-run pricing. At high volume, Zapier's costs compound fast. n8n eliminates that problem.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 06 / 10</div><div class="q-text">What is a "Polling Loop" in the context of an automated system?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> A feedback loop where users rate AI outputs</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> A loop that generates multiple AI responses and picks the best</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Checking for new data on a regular schedule and processing it when found</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> A client satisfaction survey sent on a schedule</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> A polling loop = check for new data on a schedule, process when found. Reliable and simple — the starting point before upgrading to webhooks for real-time data.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Polling loop = check on a schedule, process what's found, wait, repeat. It's functional and reliable — just not real-time. Webhooks are the upgrade.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 07 / 10</div><div class="q-text">Why is it better to combine traditional automation AND AI rather than use only AI?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Traditional automation handles the mechanical pipeline cheaply and reliably; AI handles the analysis — each does what it's best at</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> AI alone is too expensive for pipelines</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Traditional automation is more accurate than AI for all tasks</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> AI can't connect to external APIs</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Traditional automation handles scheduled pulls, transforms, and routing — cheap and reliable. AI handles analysis and insight generation — intelligent but costs tokens. Stack them for maximum efficiency.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Use both: traditional for the mechanical pipeline (cheap, reliable), AI for the analysis layer (intelligent, contextual). Combining them gets you efficiency AND intelligence.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 08 / 10</div><div class="q-text">What is LangGraph specifically designed for that n8n is not?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> LangGraph is easier to use with no coding required</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> LangGraph connects to more third-party apps</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> LangGraph is free while n8n costs money</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> LangGraph manages state for multi-step AI agents — n8n is better for trigger/action automation without state management</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> LangGraph handles stateful agent workflows — the AI needs to remember where it is across multiple steps. n8n handles simpler trigger/action pipelines. Different tools for different problems.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> LangGraph = stateful multi-step AI agents (the AI remembers context across steps). n8n = trigger/action pipelines (simpler, no state). Different tools, different use cases.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 09 / 10</div><div class="q-text">What is the correct order of operations in a standard automated AI pipeline?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> AI Analysis → Data Collection → Transform → Output</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Trigger → Collect Data → Transform → AI Analysis → Output</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Output → AI Analysis → Transform → Trigger</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Transform → Trigger → Collect Data → Output</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Trigger → Collect → Transform → Analyse → Output. Data must be collected and standardised before AI can produce reliable analysis. Garbage in = garbage out.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> The correct order: Trigger → Collect Data → Transform (standardise format) → AI Analysis → Output. You can't analyse data that hasn't been collected and standardised first.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 10 / 10</div><div class="q-text">How should you explain a complex automated AI system to a non-technical business owner?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Walk through the full technical architecture in detail</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Explain which specific AI model powers the analysis</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> "Your data feeds in automatically. The system analyses it and surfaces what you need to act on. You don't manage it — it just runs."</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Show them the n8n workflow diagram</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Outcomes first, always. Non-technical buyers don't need the architecture — they need to know it works, what it does for them, and that they don't have to manage it.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Outcome-first. "Your data feeds in automatically, the system analyses it, surfaces what matters — you don't manage it." That's the pitch. Architecture comes after they've decided they want it.</div></div>
+          <div class="quiz-submit"><button class="btn-submit" onclick="submitQuiz('m5')">Submit Answers</button><button class="btn-reset" onclick="resetQuiz('m5')">Reset</button></div>
+          <div class="quiz-result" id="result-m5"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ MODULE 6 ══════════════════ -->
+  <div class="module-page" id="m6">
+    <div class="tab-content active" id="m6-lesson">
+      <div class="section-header">
+        <div class="sec-tag">Module 06 — Sales & Positioning</div>
+        <h1 class="sec-title">How to Sell AI to Non-Technical Buyers</h1>
+        <p class="sec-desc">You could understand AI better than anyone in the room and still lose to someone who communicates it better. This module fixes that.</p>
+      </div>
+
+      <div class="callout">
+        <span class="callout-icon">🎯</span>
+        <div class="callout-text"><strong>The Fundamental Rule</strong>Sell outcomes. Not technology. A buyer doesn't care what model you use, what the context window is, or how many API calls it makes. They care what problem it solves, how much it costs, and whether it's worth it. Start there. Always.</div>
+      </div>
+
+      <h2 class="sub">How to Talk About AI Without Losing People</h2>
+      <div class="card-grid">
+        <div class="card"><div class="card-label">Don't Say</div><h3>"It uses RAG with Claude Sonnet at temperature 0.1"</h3><p>Technical jargon in a sales context signals you haven't thought about your buyer. It creates distance, not trust.</p></div>
+        <div class="card"><div class="card-label">Do Say</div><h3>"It reads your live data and tells you what to act on — automatically"</h3><p>Same system, different frame. Outcome-first language. The buyer understands the value immediately.</p></div>
+        <div class="card"><div class="card-label">Don't Say</div><h3>"It's a multi-agent Level 4 agentic system"</h3><p>Meaningless to a non-technical buyer. Worse — it sounds like you're trying to impress them rather than help them.</p></div>
+        <div class="card"><div class="card-label">Do Say</div><h3>"It monitors your operations 24/7 and flags problems before they cost you money"</h3><p>Clear, concrete, valuable. They can immediately picture what this does for them.</p></div>
+      </div>
+
+      <h2 class="sub">Common Objections — How to Handle Them</h2>
+      <div class="def-block"><div class="term">"We already have reports from our existing systems"</div><div class="def">Reports are backwards-looking. AI analysis is real-time. A report tells you what happened last night. An automated AI system tells you what's happening right now and what to do about it. One is a post-mortem. One is a command centre.</div></div>
+      <div class="def-block"><div class="term">"How accurate is the AI?"</div><div class="def">The AI doesn't guess. It analyses your actual data from your actual systems and applies rules you've defined. It's pattern detection on your own numbers — not speculation. If the data is accurate, the analysis is accurate.</div></div>
+      <div class="def-block"><div class="term">"Is my data secure?"</div><div class="def">The AI reads your data in-session for analysis — it doesn't store it separately or use it to train other models. Claude's API has enterprise-grade data handling. Your data stays yours.</div></div>
+      <div class="def-block"><div class="term">"It's expensive"</div><div class="def">Reframe as ROI. The question isn't whether it costs money — it's whether it returns more than it costs. One problem caught, one decision improved, one cost avoided — does that exceed the monthly price? In most cases, yes, many times over.</div></div>
+
+      <h2 class="sub">The ROI Framing Framework</h2>
+      <div class="callout blue">
+        <span class="callout-icon">💰</span>
+        <div class="callout-text"><strong>How to Frame Any AI Product's Price</strong>"The question isn't whether this costs money. It's whether it returns more than it costs. If this system catches one [expensive problem] per month that previously cost you [X], it pays for itself in the first week. The rest is profit." Replace [expensive problem] and [X] with specific numbers from their business. Make the math obvious.</div>
+      </div>
+
+      <h2 class="sub">Positioning AI as an Operator</h2>
+      <div class="card-grid">
+        <div class="card"><div class="card-label">Your Advantage</div><h3>You Understand Both Sides</h3><p>Most people either understand AI technically (but can't communicate it) or understand business (but can't build it). The operator who can do both — build systems AND sell them — is rare. That's the position to own.</p></div>
+        <div class="card"><div class="card-label">Your Credibility</div><h3>Stay Current</h3><p>Read The Rundown AI daily. Know what shipped this week. When a client asks "what's happening in AI?" — you have a specific, informed answer. That's how you position as the expert they want to keep talking to.</p></div>
+        <div class="card"><div class="card-label">Your Edge</div><h3>Specificity Over Breadth</h3><p>Don't position as "an AI consultant." Position as the person who builds AI-powered operational intelligence for [specific industry]. Specificity commands higher prices and attracts better clients.</p></div>
+      </div>
+
+      <h2 class="sub">Staying Current</h2>
+      <div class="card-grid">
+        <div class="card"><div class="card-label">Daily</div><h3>The Rundown AI</h3><p>5 minutes. Best signal-to-noise. Read at breakfast. Never get caught not knowing about a major development.</p></div>
+        <div class="card"><div class="card-label">Weekly</div><h3>Ben's Bites</h3><p>Business-focused AI product news. Understand what's changing in the tools your clients might encounter or ask about.</p></div>
+        <div class="card"><div class="card-label">Source</div><h3>Anthropic's Blog</h3><p>anthropic.com/news — know what Claude can do before your clients do. New capability = new conversation to have.</p></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="m6-quiz">
+      <div class="quiz-section">
+        <div class="quiz-header"><div class="quiz-tag">Module 06 — Knowledge Check</div><h2>Sales & Positioning Quiz</h2><p>10 questions. Select your answer then hit Submit.</p></div>
+        <div id="quiz-m6">
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 01 / 10</div><div class="q-text">What is the fundamental rule when selling AI products to non-technical buyers?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Lead with the technology stack and model names to show expertise</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Lead with competitor comparisons to establish value</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Sell outcomes, not technology — what problem does it solve, not how it works</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Lead with the monthly price to anchor expectations early</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Outcomes first. The buyer doesn't care about the architecture — they care about what it does for their business and whether it's worth the cost.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Sell outcomes, not technology. Lead with the problem solved and the value created. Architecture comes later, if ever.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 02 / 10</div><div class="q-text">A buyer says "we already get reports from our existing software." What is the correct reframe?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Reports are backwards-looking. AI analysis is real-time — act at 7pm, not post-mortem the next morning.</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> AI completely replaces those existing tools</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Those reports are inaccurate — AI fixes them</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> AI is cheaper than running their existing software</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> "Reports tell you what happened. AI analysis tells you what's happening — and what to do about it right now." Post-mortem vs command centre. That's the reframe.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> The reframe: reports = backwards-looking. Real-time AI = you can act now, not after the damage is done. Post-mortem vs command centre.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 03 / 10</div><div class="q-text">How do you handle "how accurate is the AI?"</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Cite a percentage accuracy rating</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Say it's trained on millions of similar businesses</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Tell them they can manually verify each output</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> "It analyses your actual data with rules you set — it's pattern detection on your own numbers, not guessing"</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> This is the honest, powerful answer. The AI reads their real data and applies their own defined rules. No speculation — pattern detection on real numbers.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> The right answer: it reads their actual data and applies rules they define. Not guessing — detecting patterns in their own real numbers.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 04 / 10</div><div class="q-text">A buyer says "it's too expensive." What is the correct response framework?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Immediately offer a discount</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Reframe as ROI — does one problem caught or cost avoided per month exceed the price?</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Agree and offer to build something simpler</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Compare to competitor pricing to show value</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Reframe from expense to investment. The question isn't whether it costs money — it's whether it returns more than it costs. Make the math obvious with their specific numbers.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Don't discount or compare to competitors first. Reframe to ROI: does the value returned exceed the price? Make the math concrete and obvious.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 05 / 10</div><div class="q-text">Which of these is the better way to describe an AI system to a non-technical buyer?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> "It's a multi-agent Level 4 agentic system with RAG architecture"</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> "It uses Claude Sonnet at temperature 0.1 with XML-structured prompts"</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> "It monitors your operations automatically and flags problems before they cost you money"</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> "It's basically a very advanced chatbot with API integrations"</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Clear, concrete, valuable. The buyer immediately understands what it does for them. No jargon, no architecture — pure outcome.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> "Monitors your operations and flags problems before they cost you money" — clear, concrete, outcome-first. That's the language that converts.</div></div>
+          <div class="quiz-question" data-correct="a"><div class="q-num">Question 06 / 10</div><div class="q-text">What is the correct answer to "is my data secure?"</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> "The AI reads your data in-session for analysis — it doesn't store it separately or use it to train other models"</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> "All data is stored on encrypted servers in your country"</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> "We delete all data every 24 hours automatically"</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> "We use blockchain to ensure data security"</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> In-session analysis + no training use = the two things a careful business owner needs to hear. Accurate, reassuring, and shows you understand what you're selling.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> The correct answer: data is read in-session for analysis only. It's not stored separately or used for model training. That covers the two main security concerns.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 07 / 10</div><div class="q-text">Why is "specificity" more valuable than "breadth" when positioning yourself as an AI operator?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> Broad positioning attracts more clients</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Specificity makes you appear less experienced</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Broad positioning commands higher prices</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Specificity commands higher prices and attracts better clients who see you as the expert in their space</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> "AI consultant" = commodity. "AI-powered operational intelligence for [specific industry]" = expert. Specificity signals depth. Depth commands premium pricing.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Specificity wins. "AI consultant" is a commodity. "The person who builds AI operational systems for [specific industry]" is a specialist. Specialists command premium pricing.</div></div>
+          <div class="quiz-question" data-correct="b"><div class="q-num">Question 08 / 10</div><div class="q-text">What does "staying current" in AI do for your sales credibility?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> It lets you charge more per hour automatically</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> When a client asks "what's happening in AI?" you have a specific, informed answer — positioning you as the expert worth keeping</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> It makes technical conversations easier with developers</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> It allows you to use newer models in your systems</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> When clients ask about AI news and you have a specific, informed answer, you become the person they want to keep talking to. That's how relationships and referrals compound.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> Staying current = having specific, informed answers when clients ask. That positions you as the expert they want to maintain a relationship with. Credibility compounds.</div></div>
+          <div class="quiz-question" data-correct="c"><div class="q-num">Question 09 / 10</div><div class="q-text">What makes an operator who can build AND sell AI systems rare?</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> There are very few people who understand AI</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> Building AI requires a computer science degree</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> Most people can do one or the other — understand the tech OR communicate value — rarely both</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> Selling AI requires a specific certification</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> Builders often can't sell. Salespeople often can't build. The operator who does both — builds real systems AND communicates their value clearly — occupies a rare, high-value position.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> The rare combination: understand the tech deeply enough to build it, and understand people deeply enough to sell it. Most people have one. Both together = rare = premium.</div></div>
+          <div class="quiz-question" data-correct="d"><div class="q-num">Question 10 / 10</div><div class="q-text">Complete the ROI framing: "The question isn't whether this costs money. It's whether..."</div><div class="q-options"><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">A</span> "...you can afford it right now"</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">B</span> "...it's cheaper than the competition"</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">C</span> "...your team has time to use it"</button><button class="q-option" onclick="selectOption(this)"><span class="opt-letter">D</span> "...it returns more than it costs"</button></div><div class="q-feedback fb-correct"><strong>✓ Correct.</strong> "The question isn't whether this costs money. It's whether it returns more than it costs." Simple, powerful, reframes price as an investment decision not an expense.</div><div class="q-feedback fb-wrong"><strong>✗ Incorrect.</strong> "...it returns more than it costs." That's the complete frame. Every price objection answered with: does the return exceed the investment? Make that math obvious.</div></div>
+          <div class="quiz-submit"><button class="btn-submit" onclick="submitQuiz('m6')">Submit Answers</button><button class="btn-reset" onclick="resetQuiz('m6')">Reset</button></div>
+          <div class="quiz-result" id="result-m6"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </main>
+</div><!-- end course-shell -->
+
+<script>
+  // ─── COVER ───
+  function startCourse() {
+    document.getElementById('cover').style.display = 'none';
+    document.getElementById('courseShell').classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function backToCover() {
+    document.getElementById('courseShell').classList.remove('active');
+    document.getElementById('cover').style.display = 'flex';
+    window.scrollTo(0, 0);
+  }
+
+  // ─── MODULE + TAB NAV ───
+  let currentModule = 'm1';
+
+  function showModule(id, btn) {
+    document.querySelectorAll('.module-page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.mod-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    currentModule = id;
+    showTabByName('lesson');
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent.trim() === 'Lesson');
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showTab(tabName, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    showTabByName(tabName);
+  }
+
+  function showTabByName(tabName) {
+    const modPage = document.getElementById(currentModule);
+    modPage.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    const target = document.getElementById(currentModule + '-' + tabName);
+    if (target) target.classList.add('active');
+  }
+
+  // ─── QUIZ LOGIC ───
+  function selectOption(btn) {
+    const question = btn.closest('.quiz-question');
+    if (question.dataset.answered) return;
+    question.querySelectorAll('.q-option').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function submitQuiz(moduleId) {
+    const quizEl = document.getElementById('quiz-' + moduleId);
+    const questions = quizEl.querySelectorAll('.quiz-question');
+    let score = 0;
+    let answered = 0;
+
+    questions.forEach(q => {
+      const selected = q.querySelector('.q-option.selected');
+      if (!selected) return;
+      answered++;
+    });
+
+    if (answered < questions.length) {
+      alert('Answer all 10 questions before submitting.');
+      return;
+    }
+
+    questions.forEach(q => {
+      const selected = q.querySelector('.q-option.selected');
+      q.dataset.answered = true;
+      const correct = q.dataset.correct;
+      const letters = ['a','b','c','d'];
+      const opts = q.querySelectorAll('.q-option');
+      const correctIndex = letters.indexOf(correct);
+      const selectedIndex = [...opts].indexOf(selected);
+      opts.forEach(b => b.disabled = true);
+      opts[correctIndex].classList.add('revealed-correct');
+      if (selectedIndex === correctIndex) {
+        score++;
+        selected.classList.add('revealed-correct');
+        q.querySelector('.fb-correct').classList.add('show');
+        q.classList.add('correct');
+      } else {
+        selected.classList.add('revealed-wrong');
+        q.querySelector('.fb-wrong').classList.add('show');
+        q.classList.add('incorrect');
+      }
+    });
+
+    const resultEl = document.getElementById('result-' + moduleId);
+    const pct = Math.round((score / 10) * 100);
+    const pass = score >= 7;
+    const msgs = {10:"Perfect. Cold. Move on.",9:"One slip. Solid. Review the miss.",8:"Strong pass. Know what you missed.",7:"Pass — barely. Review the wrong answers.",6:"Just under. Lesson again, then retry.",5:"50/50. Not locked in yet. Re-read and retry.",4:"Below pass. More work needed here.",3:"Not sticking. Read the lesson again slowly.",2:"Not there yet. Lesson first, come back.",1:"Read the lesson. All of it.",0:"Start the lesson from scratch."};
+    resultEl.innerHTML = `<div class="result-score ${pass?'pass':'fail'}">${score}/10</div><div class="result-label">${pct}% · ${pass?'PASSED':'NEEDS WORK'}</div><div class="result-msg">${msgs[score]}</div>`;
+    resultEl.classList.add('show');
+    updateProgress(moduleId, score);
+    quizEl.querySelector('.btn-submit').disabled = true;
+  }
+
+  function resetQuiz(moduleId) {
+    const quizEl = document.getElementById('quiz-' + moduleId);
+    quizEl.querySelectorAll('.quiz-question').forEach(q => {
+      delete q.dataset.answered;
+      q.classList.remove('correct','incorrect');
+      q.querySelectorAll('.q-option').forEach(b => { b.disabled=false; b.classList.remove('selected','revealed-correct','revealed-wrong'); });
+      q.querySelectorAll('.q-feedback').forEach(f => f.classList.remove('show'));
+    });
+    const resultEl = document.getElementById('result-' + moduleId);
+    resultEl.classList.remove('show');
+    resultEl.innerHTML = '';
+    quizEl.querySelector('.btn-submit').disabled = false;
+  }
+
+  // ─── PROGRESS ───
+  const moduleScores = {};
+  function updateProgress(moduleId, score) {
+    moduleScores[moduleId] = score;
+    const total = Object.values(moduleScores).reduce((a,b) => a+b, 0);
+    const pct = Math.round((total / 60) * 100);
+    document.getElementById('overallProgress').style.width = pct + '%';
+    document.getElementById('overallPct').textContent = pct + '%';
+    if (score >= 7) {
+      document.querySelectorAll('.mod-btn').forEach(btn => {
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("'" + moduleId + "'")) {
+          if (!btn.querySelector('.mod-check')) {
+            const check = document.createElement('span');
+            check.className = 'mod-check';
+            check.textContent = ' ✓';
+            btn.appendChild(check);
+          }
+        }
+      });
+    }
+  }
+</script>
+</body>
+</html>
